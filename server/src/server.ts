@@ -130,7 +130,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   let text = textDocument.getText();
   let result = "[]";
   try {
-    result = execSync("./wisl.native", {
+    result = execSync(`./wisl.native -uri ${textDocument.uri}`, {
       input: text,
       encoding: "utf8"
 	}).toString();
