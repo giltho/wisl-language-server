@@ -1,4 +1,4 @@
-Copyright (c) Microsoft Corporation
+Copyright (c) Sacha Ayoun - Imperial College London
 
 All rights reserved.
  

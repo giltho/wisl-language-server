@@ -1,0 +1,476 @@
+{
+  "scopeName": "source.wisl",
+  "name": "WISL",
+  "fileTypes": [
+    "wisl"
+  ],
+  "patterns": [
+    {
+      "include": "#functions"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#statements"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "begin": "//",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.wisl"
+        }
+      },
+      "end": "$",
+      "name": "comment.line.double-slash.wisl"
+    },
+    "function_innards": {
+      "patterns": [
+        {
+          "match": "(?:\\s*)?\\b(function|predicate|lemma)\\b(?:\\s*)([a-zA-Z][a-zA-Z_]*)\\b(?=\\s*\\()",
+          "captures": {
+            "1": {
+              "name": "storage.type.$1.wisl"
+            },
+            "2": {
+              "name": "entity.name.$1.wisl"
+            }
+          }
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#function_params"
+        }
+      ]
+    },
+    "functions": {
+      "begin": "(?=(?:\\s*)?\\b(function|predicate|lemma)\\b(?:\\s*)([a-zA-Z][a-zA-Z_]*)\\b(?:\\s*\\())",
+      "end": "(?<=})",
+      "name": "meta.$1.wisl",
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#function_body"
+        },
+        {
+          "begin": "\\G",
+          "end": "(?<=\\))",
+          "patterns": [
+            {
+              "include": "#function_innards"
+            }
+          ]
+        }
+      ]
+    },
+    "function_params": {
+      "patterns": [
+        {
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.begin.bracket.round.wisl"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.end.bracket.round.wisl"
+            }
+          },
+          "name": "meta.parameters.wisl",
+          "patterns": [
+            {
+              "match": "\\b([a-zA-Z][a-zA-Z_]*)(,)?(?:\\s*)?",
+              "captures": {
+                "1": {
+                  "name": "variable.parameter.function.wisl"
+                },
+                "2": {
+                  "name": "meta.delimiter.parameter.wisl"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "function_body": {
+      "begin": "{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.function.body.begin.bracket.curly.wisl"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.function.body.end.bracket.curly.wisl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#statements"
+        }
+      ]
+    },
+    "records": {
+      "patterns": [
+        {
+          "match": "\\b([a-zA-Z][a-zA-Z_]*)\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "entity.name.property.wisl"
+            },
+            "2": {
+              "name": "keyword.operator.assignment.wisl"
+            }
+          }
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "match": ",",
+          "name": "meta.delimiter.parameter.comma.wisl"
+        }
+      ]
+    },
+    "statements": {
+      "patterns": [
+        {
+          "match": "(proof|variant|hypothesis|conclusions)\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.logic.wisl"
+            },
+            "2": {
+              "name": "punctuation.logic.colon.wisl"
+            }
+          }
+        },
+        {
+          "include": "#control_blocks"
+        },
+        {
+          "match": "\\bskip\\b",
+          "name": "keyword.control.wisl"
+        },
+        {
+          "begin": "\\b(new)\\b\\s*\\(",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.other.new.wisl"
+            }
+          },
+          "end": "\\)",
+          "patterns": [
+            {
+              "include": "#records"
+            }
+          ]
+        },
+        {
+          "match": "\\b([a-zA-Z][a-zA-Z_]*)\\b(?=\\s*\\()",
+          "name": "entity.name.function.wisl"
+        },
+        {
+          "match": ",",
+          "name": "meta.delimiter.parameter.comma.wisl"
+        },
+        {
+          "match": ";",
+          "name": "punctuation.terminator.statement.wisl"
+        },
+        {
+          "match": ":=",
+          "name": "keyword.operator.assignment.wisl"
+        },
+        {
+          "match": "(?<!\\.)\\bdelete\\b",
+          "name": "keyword.other.delete.wisl"
+        },
+        {
+          "match": "([a-zA-Z][a-zA-Z_]*)?(\\.)([a-zA-Z][a-zA-Z_]*)",
+          "captures": {
+            "1": {
+              "name": "variable.other.object.wisl"
+            },
+            "2": {
+              "name": "meta.delimiter.property.period.wisl"
+            },
+            "3": {
+              "name": "variable.other.property.wisl"
+            }
+          }
+        },
+        {
+          "begin": "return",
+          "beginCaptures": {
+            "0": {
+              "name": "keyword.control.return.wisl"
+            }
+          },
+          "end": "\\s*(?=})",
+          "patterns": [
+            {
+              "include": "#expressions"
+            },
+            {
+              "match": ";",
+              "name": "invalid.illegal.terminator.statement.wisl"
+            }
+          ]
+        },
+        {
+          "include": "#expressions"
+        },
+        {
+          "begin": "({)\\s*(invariant|lcmd)\\s*:",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.logic.begin.bracket.curly.wisl"
+            },
+            "2": {
+              "name": "keyword.control.logic.wisl"
+            }
+          },
+          "end": "}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.logic.end.bracket.curly.wisl"
+            }
+          },
+          "name": "meta.section.logic",
+          "patterns": [
+            {
+              "include": "#statements"
+            }
+          ]
+        }
+      ]
+    },
+    "control_blocks": {
+      "patterns": [
+        {
+          "begin": "(?=(?:\\s*)?\\b(while|if)\\b(?:\\s*\\())",
+          "end": "(?<=})",
+          "name": "meta.block.wisl",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#function_body"
+            },
+            {
+              "begin": "\\G",
+              "end": "(?<=\\))",
+              "patterns": [
+                {
+                  "include": "#control_blocks_innards"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "begin": "(?:\\s*)?\\b(else)\\b(?=\\s*{)",
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.control.wisl"
+            }
+          },
+          "end": "(?<=})",
+          "name": "meta.block.wisl",
+          "patterns": [
+            {
+              "include": "#function_body"
+            }
+          ]
+        }
+      ]
+    },
+    "control_blocks_innards": {
+      "patterns": [
+        {
+          "match": "(?:\\s*)?\\b(while|if)\\b(?=\\s*\\()",
+          "captures": {
+            "0": {
+              "name": "keyword.control.wisl"
+            }
+          }
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#block_params"
+        }
+      ]
+    },
+    "block_params": {
+      "patterns": [
+        {
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.begin.bracket.round.wisl"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.end.bracket.round.wisl"
+            }
+          },
+          "name": "meta.parameters.wisl",
+          "patterns": [
+            {
+              "include": "#expressions"
+            }
+          ]
+        }
+      ]
+    },
+    "expressions": {
+      "patterns": [
+        {
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": {
+              "name": "meta.brace.round.wisl"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "meta.brace.round.wisl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#expressions"
+            }
+          ]
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#values"
+        },
+        {
+          "include": "#variables"
+        },
+        {
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": {
+              "name": "meta.brace.square.wisl"
+            }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": {
+              "name": "meta.brace.square.wisl"
+            }
+          },
+          "name": "list.wisl",
+          "patterns": [
+            {
+              "include": "#expressions"
+            }
+          ]
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "match": "->",
+          "name": "keyword.operator.arrow.wisl"
+        },
+        {
+          "match": "\\+|-|\\*|/|%",
+          "name": "keyword.operator.arithmetic.wisl"
+        },
+        {
+          "match": "not|&&|\\|\\|!|/\\\\|\\\\/",
+          "name": "keyword.operator.logical.wisl"
+        },
+        {
+          "match": "\\b(len|hd|tl|@|::)\\b",
+          "name": "keyword.operator.other.list.wisl"
+        },
+        {
+          "match": "<|>|<=|>=|=|!=|>=#|>#|<=#|<#|==",
+          "name": "keyword.operator.comparison.wisl"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "match": "true|True|false|False|nil|null|emp",
+          "name": "constant.language.wisl"
+        },
+        {
+          "match": "[0-9]+(\\.[0-9]*)?",
+          "name": "constant.numeric.wisl"
+        },
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.wisl"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.wisl"
+            }
+          },
+          "name": "string.quoted.double.wisl",
+          "patterns": [
+            {
+              "match": "[^\"]*[^\\n\\r\"\\\\]$",
+              "name": "invalid.illegal.string.wisl"
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "match": "\\b(ret)\\b",
+          "name": "variable.language.wisl"
+        },
+        {
+          "match": "x__ret",
+          "name": "invalid.illegal.variable.wisl"
+        },
+        {
+          "match": "\\b[a-zA-Z][a-zA-Z_]*\\b",
+          "name": "variable.program.wisl"
+        },
+        {
+          "match": "#[a-zA-Z][a-zA-Z_]*\\b",
+          "name": "variable.logical.wisl"
+        }
+      ]
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json"
+}

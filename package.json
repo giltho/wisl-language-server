@@ -1,27 +1,30 @@
 {
 	"name": "vscode-wisl-language-server",
-	"description": "A Language server implementation for WISL",
+	"description": "WISL Coloring and Analysis using Separation Logic",
 	"author": "Sacha Ayoun <sachaayoun@gmail.com>",
 	"license": "MIT",
 	"version": "0.0.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/giltho/wisl-language-server.git"
 	},
 	"publisher": "giltho",
-	"categories": [],
+	"categories": [
+		"Programming Languages"
+	],
 	"keywords": [
 		"wisl",
 		"separation logic"
 	],
+	"icon": "assets/logo.png",
 	"engines": {
 		"vscode": "^1.23.0"
 	},
 	"activationEvents": [
-		"onLanguage:WISL"
+		"onLanguage:wisl"
 	],
-	"contributes":{
-		"configuration":[
+	"contributes": {
+		"configuration": [
 			{
 				"title": "Wisl Configuration",
 				"properties": {
@@ -31,6 +34,26 @@
 						"description": "Path to the wisl binary used for analysis"
 					}
 				}
+			}
+		],
+		"languages": [
+			{
+				"id": "wisl",
+				"aliases": [
+					"WISL",
+					"wisl"
+				],
+				"extensions": [
+					".wisl"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "wisl",
+				"scopeName": "source.wisl",
+				"path": "./syntaxes/wisl.tmLanguage.json"
 			}
 		]
 	},
@@ -42,8 +65,7 @@
 		"watch:client": "tsc -w -p ./client/tsconfig.json",
 		"watch:server": "tsc -w -p ./server/tsconfig.json",
 		"compile": "npm run compile:client && npm run compile:server",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
-		"test": "sh ./scripts/e2e.sh"
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd .."
 	},
 	"devDependencies": {
 		"@types/mocha": "^5.2.0",
