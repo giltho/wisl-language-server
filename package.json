@@ -1,5 +1,6 @@
 {
 	"name": "vscode-wisl-language-server",
+	"displayName": "WISL Language Server",
 	"description": "WISL Coloring and Analysis using Separation Logic",
 	"author": "Sacha Ayoun <sachaayoun@gmail.com>",
 	"license": "MIT",

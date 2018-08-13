@@ -1,6 +1,7 @@
-# WISL Language Server
+# <img src="assets/logo.png" alt="WISL Logo" width="50px"/> WISL Language Server
 
-ThiS Language server is used to color and diagnose WISL code
+
+This Language server is used to color and diagnose WISL code
 
 ## Functionality
 
@@ -33,3 +34,6 @@ This Language Server works for plain text file. It has the following language fe
 │   └── wisl.tmLanguage.json
 └── tsconfig.base.json
 ```
+
+# Logo Credit
+@Valentin Magnat
