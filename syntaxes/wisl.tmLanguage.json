@@ -148,7 +148,7 @@
     "statements": {
       "patterns": [
         {
-          "match": "(proof|variant|hypothesis|conclusions)\\s*(:)",
+          "match": "(proof|variant|hypothesis|conclusion)\\s*(:)",
           "captures": {
             "1": {
               "name": "keyword.control.logic.wisl"
@@ -160,6 +160,26 @@
         },
         {
           "include": "#control_blocks"
+        },
+        {
+          "begin": "\\[\\[",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.logic.begin.double.bracket.wisl"
+            }
+          },
+          "end": "\\]\\]",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.logic.end.double.bracket.wisl"
+            }
+          },
+          "name": "meta.section.logic",
+          "patterns": [
+            {
+              "include": "#statements"
+            }
+          ]
         },
         {
           "match": "\\bskip\\b",
@@ -235,27 +255,8 @@
           "include": "#expressions"
         },
         {
-          "begin": "({)\\s*(invariant|lcmd)\\s*:",
-          "beginCaptures": {
-            "1": {
-              "name": "punctuation.definition.logic.begin.bracket.curly.wisl"
-            },
-            "2": {
-              "name": "keyword.control.logic.wisl"
-            }
-          },
-          "end": "}",
-          "endCaptures": {
-            "0": {
-              "name": "punctuation.definition.logic.end.bracket.curly.wisl"
-            }
-          },
-          "name": "meta.section.logic",
-          "patterns": [
-            {
-              "include": "#statements"
-            }
-          ]
+          "match": "unfold|fold|apply|assert|invariant|bind",
+          "name": "keyword.control.statement.logic.wisl"
         }
       ]
     },
