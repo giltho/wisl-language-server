@@ -1,4 +1,4 @@
-# <img src="assets/logo.png" alt="WISL Logo" width="50px"/> WISL Language Server
+# <img src="https://github.com/giltho/wisl-language-server/raw/master/assets/logo.png" alt="WISL Logo" width="50px"/> WISL Language Server
 
 
 This Language server is used to color and diagnose WISL code
