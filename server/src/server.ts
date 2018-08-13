@@ -41,9 +41,9 @@ connection.onInitialize((params: InitializeParams) => {
   hasWorkspaceFolderCapability =
     capabilities.workspace && !!capabilities.workspace.workspaceFolders;
   // hasDiagnosticRelatedInformationCapability =
-  // 	capabilities.textDocument &&
-  // 	capabilities.textDocument.publishDiagnostics &&
-  // 	capabilities.textDocument.publishDiagnostics.relatedInformation;
+  //  	capabilities.textDocument &&
+  //  	capabilities.textDocument.publishDiagnostics &&
+  //  	capabilities.textDocument.publishDiagnostics.relatedInformation;
 
   return {
     capabilities: {
@@ -72,47 +72,47 @@ connection.onInitialized(() => {
 });
 
 // The example settings
-interface ExampleSettings {
-  maxNumberOfProblems: number;
+interface WislSettings {
+  binaryPath: string;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-// const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-// let globalSettings: ExampleSettings = defaultSettings;
+ const defaultSettings: WislSettings = { binaryPath: "wisl" };
+ let globalSettings: WislSettings = defaultSettings;
 
 // Cache the settings of all open documents
-let documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
+let documentSettings: Map<string, Thenable<WislSettings>> = new Map();
 
-connection.onDidChangeConfiguration(() => {
+connection.onDidChangeConfiguration(change => {
   if (hasConfigurationCapability) {
     // Reset all cached document settings
     documentSettings.clear();
   } else {
-    // globalSettings = <ExampleSettings>(
-    // 	(change.settings.languageServerExample || defaultSettings)
-    // );
+     globalSettings = <WislSettings>(
+     	(change.settings.languageServerExample || defaultSettings)
+     );
   }
 
   // Revalidate all open text documents
   documents.all().forEach(validateTextDocument);
 });
 
-// function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
-// 	if (!hasConfigurationCapability) {
-// 		return Promise.resolve(globalSettings);
-// 	}
-// 	let result = documentSettings.get(resource);
-// 	if (!result) {
-// 		result = connection.workspace.getConfiguration({
-// 			scopeUri: resource,
-// 			section: 'languageServerExample'
-// 		});
-// 		documentSettings.set(resource, result);
-// 	}
-// 	return result;
-// }
+function getDocumentSettings(resource: string): Thenable<WislSettings> {
+	if (!hasConfigurationCapability) {
+		return Promise.resolve(globalSettings);
+	}
+	let result = documentSettings.get(resource);
+	if (!result) {
+		result = connection.workspace.getConfiguration({
+			scopeUri: resource,
+			section: 'wisl'
+		});
+		documentSettings.set(resource, result);
+	}
+	return result;
+}
 
 // Only keep settings for open documents
 documents.onDidClose(e => {
@@ -127,22 +127,22 @@ documents.onDidChangeContent(change => {
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   // The validator creates diagnostics for all uppercase words length 2 and more
+  let settings = await getDocumentSettings(textDocument.uri)
   let text = textDocument.getText();
   let result = "[]";
   try {
-    result = execSync(`./wisl.native -uri ${textDocument.uri}`, {
+      result = execSync(`${settings.binaryPath} -uri ${textDocument.uri}`, {
       input: text,
       encoding: "utf8"
-	}).toString();
-	
-    const diagnostics: Diagnostic[] = JSON.parse(result);
-	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-	
-  } catch (e) {
+    }).toString();
 
-	connection.window.showErrorMessage(e.toString());
-  
-}
+    const diagnostics: Diagnostic[] = JSON.parse(result);
+    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+  } catch (e) {
+    const diagnostics: Diagnostic[] = [];
+    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    connection.window.showErrorMessage(e.toString());
+  }
 }
 
 connection.onDidChangeWatchedFiles(_change => {
