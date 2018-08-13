@@ -4,6 +4,8 @@
  * ------------------------------------------------------------------------------------------ */
 "use strict";
 
+import { existsSync } from "fs";
+
 import { execSync } from "child_process";
 
 import {
@@ -91,7 +93,7 @@ connection.onDidChangeConfiguration(change => {
     documentSettings.clear();
   } else {
      globalSettings = <WislSettings>(
-     	(change.settings.languageServerExample || defaultSettings)
+     	(change.settings.wisl || defaultSettings)
      );
   }
 
@@ -128,6 +130,9 @@ documents.onDidChangeContent(change => {
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   // The validator creates diagnostics for all uppercase words length 2 and more
   let settings = await getDocumentSettings(textDocument.uri)
+  if (!existsSync(settings.binaryPath)) {
+    return;
+  }
   let text = textDocument.getText();
   let result = "[]";
   try {
