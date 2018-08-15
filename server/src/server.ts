@@ -76,12 +76,13 @@ connection.onInitialized(() => {
 // The example settings
 interface WislSettings {
   binaryPath: string;
+  debugMode: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
- const defaultSettings: WislSettings = { binaryPath: "wisl" };
+ const defaultSettings: WislSettings = { binaryPath: "wisl", debugMode: false };
  let globalSettings: WislSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -136,7 +137,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   let text = textDocument.getText();
   let result = "[]";
   try {
-      result = execSync(`${settings.binaryPath} -uri ${textDocument.uri}`, {
+      result = execSync(`${settings.binaryPath} -uri ${textDocument.uri} ${settings.debugMode ? "-debug" : ""}`, {
       input: text,
       encoding: "utf8"
     }).toString();

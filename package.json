@@ -33,6 +33,11 @@
 						"type": "string",
 						"default": "wisl",
 						"description": "Path to the wisl binary used for analysis"
+					},
+					"wisl.debugMode": {
+						"type": "boolean",
+						"default": false,
+						"description": "Use WISL in debug mode"
 					}
 				}
 			}
