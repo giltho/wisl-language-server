@@ -148,7 +148,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
       encoding: "utf8"
     }).toString();
 
-    const diagnostics: Diagnostic[] = JSON.parse(result);
+    const diagnostics: Diagnostic[] = JSON.parse(result).diagnostics;
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
   } catch (e) {
     const diagnostics: Diagnostic[] = [];
@@ -200,9 +200,34 @@ connection.onCompletionResolve(
 
 
 connection.onCodeLens(
-  support.cancellableHandler(async /*({ textDocument }, token)*/ () => {
-    const codeLenses : CodeLens[] = [];
-    return codeLenses;
+  support.cancellableHandler(async ({ textDocument }) => {
+    // The validator creates diagnostics for all uppercase words length 2 and more
+    let settings = await getDocumentSettings(textDocument.uri)
+    let document = documents.get(textDocument.uri);
+    if (!(existsSync(settings.binaryPath) && document)) {
+      return null;
+    }
+    let text = document.getText();
+    let result = "[]";
+    try {
+        result = execSync(`${settings.binaryPath} -uri ${textDocument.uri} ${settings.debugMode ? "-debug" : ""}`, {
+        input: text,
+        encoding: "utf8"
+      }).toString();
+
+      const codeLenses : CodeLens[] = JSON.parse(result).codeLenses;
+      return codeLenses;
+    } catch (e) {
+      return null;
+    }
+  })
+)
+
+connection.onCodeLensResolve(
+  support.cancellableHandler(async /* (codelens, { textDocument })*/ () => {
+    console.log("TEST");
+    const codeLens : CodeLens|null = null;
+    return codeLens;
   })
 )
 
