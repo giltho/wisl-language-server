@@ -27,7 +27,7 @@
 	"contributes": {
 		"configuration": [
 			{
-				"title": "Wisl Configuration",
+				"title": "WISL",
 				"properties": {
 					"wisl.binaryPath": {
 						"type": "string",
@@ -38,6 +38,32 @@
 						"type": "boolean",
 						"default": false,
 						"description": "Use WISL in debug mode"
+					},
+					"wisl.trace.server": {
+						"scope": "window",
+						"type": "object",
+						"description": "Traces the communication between VS Code and the language server.",
+						"properties": {
+							"verbosity": {
+								"type": "string",
+								"description": "Controls the verbosity of the trace.",
+								"enum": [
+									"off",
+									"message",
+									"verbose"
+								],
+								"default": "off"
+							},
+							"format": {
+								"type": "string",
+								"description": "Controls the output format of the trace.",
+								"enum": [
+									"text",
+									"json"
+								],
+								"default": "text"
+							}
+						}
 					}
 				}
 			}

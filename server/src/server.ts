@@ -18,8 +18,11 @@ import {
   DidChangeConfigurationNotification,
   CompletionItem,
   CompletionItemKind,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
+  CodeLens
 } from "vscode-languageserver";
+
+import * as support from "./support";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -51,7 +54,10 @@ connection.onInitialize((params: InitializeParams) => {
     capabilities: {
       textDocumentSync: documents.syncKind,
       // Tell the client that the server supports code completion
-      completionProvider: {
+      // completionProvider: {
+      //   resolveProvider: false
+      // }
+      codeLensProvider : {
         resolveProvider: true
       }
     }
@@ -191,6 +197,15 @@ connection.onCompletionResolve(
     return item;
   }
 );
+
+
+connection.onCodeLens(
+  support.cancellableHandler(async /*({ textDocument }, token)*/ () => {
+    const codeLenses : CodeLens[] = [];
+    return codeLenses;
+  })
+)
+
 
 /*
 connection.onDidOpenTextDocument((params) => {
