@@ -39,6 +39,11 @@
 						"default": false,
 						"description": "Use WISL in debug mode"
 					},
+					"wisl.useServer": {
+						"type": "boolean",
+						"default": true,
+						"description": "Set to false if you do not want to launch the server for analysis"
+					},
 					"wisl.trace.server": {
 						"scope": "window",
 						"type": "object",

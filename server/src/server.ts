@@ -19,7 +19,8 @@ import {
   CompletionItem,
   CompletionItemKind,
   TextDocumentPositionParams,
-  CodeLens
+  CodeLens,
+  TextDocumentChangeEvent
 } from "vscode-languageserver";
 
 import * as support from "./support";
@@ -83,12 +84,13 @@ connection.onInitialized(() => {
 interface WislSettings {
   binaryPath: string;
   debugMode: boolean;
+  useServer: boolean;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
- const defaultSettings: WislSettings = { binaryPath: "wisl", debugMode: false };
+ const defaultSettings: WislSettings = { binaryPath: "wisl", debugMode: false, useServer: true };
  let globalSettings: WislSettings = defaultSettings;
 
 // Cache the settings of all open documents
@@ -130,7 +132,7 @@ documents.onDidClose(e => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
-documents.onDidChangeContent(change => {
+documents.onDidChangeContent((change:TextDocumentChangeEvent) => {
   validateTextDocument(change.document);
 });
 
