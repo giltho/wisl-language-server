@@ -39,6 +39,11 @@
 						"default": false,
 						"description": "Use WISL in debug mode"
 					},
+					"wisl.useVerifier": {
+						"type": "boolean",
+						"default": true,
+						"description": "Set to false if you don't want to use the verifier"
+					},
 					"wisl.trace.server": {
 						"scope": "window",
 						"type": "object",

@@ -53,9 +53,13 @@ export function activate(context: ExtensionContext) {
 		serverOptions,
 		clientOptions
 	);
+
+	const wislConf = workspace.getConfiguration('wisl');
 	
 	// Start the client. This will also launch the server
-	client.start();
+	if (wislConf.useVerifier) { // Do so only if the useVerifier param is activated
+		client.start();
+	}
 }
 
 export function deactivate(): Thenable<void> {
